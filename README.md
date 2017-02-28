@@ -1,1 +1,2 @@
-# bash_scripts
+# Bash scripts
+Scripts for linux working improvement.
