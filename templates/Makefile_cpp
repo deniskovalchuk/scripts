@@ -1,0 +1,19 @@
+CXX        = g++
+CXXFLAGS   = -c -g -Wall -std=c++14
+SOURCES    = $(wildcard *.cpp)
+OBJECTS    = $(patsubst %.cpp, %.o, $(SOURCES))
+EXECUTABLE = file_name
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX)  $(OBJECTS) -o $(EXECUTABLE)
+
+%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+clean:
+	@rm -f *~
+	@rm -f *.o
+
+.PHONY: clean

@@ -1,0 +1,15 @@
+/**
+ * file_name.c -- 
+ *
+ * Copyright (c) year, Denis Kovalchuk <deniskk25@gmail.com>
+ *
+ * This code is licensed under a MIT-style license.
+ */
+
+#include <stdlib.h>
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+
+    return 0;
+}

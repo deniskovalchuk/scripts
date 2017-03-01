@@ -1,0 +1,19 @@
+CXX        = gcc
+CXXFLAGS   = -c -g -Wall
+SOURCES    = $(wildcard *.c)
+OBJECTS    = $(patsubst %.c, %.o, $(SOURCES))
+EXECUTABLE = file_name
+
+all: $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CXX)  $(OBJECTS) -o $(EXECUTABLE)
+
+%.o: %.c
+	$(CXX) $(CXXFLAGS) $< -o $@
+
+clean:
+	@rm -f *~
+	@rm -f *.o
+
+.PHONY: clean

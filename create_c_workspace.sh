@@ -1,8 +1,8 @@
 #!/bin/bash
 #######################################################################
-# Script for creating a workspace C/C++                               #
+# Script for creating a workspace C/C++.                              #
 #                                                                     #
-# Usage: ./create_cws                                                 #
+# Usage: ./create_c_workspace [OPTION]                                #
 #          -d=dir_name  - name of a workspace                         #
 #          -e=file_name - name of execute file                        #
 #          -t=type_pr   - type project (c or c++)                     #
@@ -21,7 +21,7 @@ fi
 dir_name="project"
 file_name="main"
 lingua_flag="c"
-current_year=$(date +"%Y")
+year=$(date +"%Y")
 
 function set_argv {
     case "$1" in
@@ -42,16 +42,16 @@ do
     set_argv $argument
 done
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 case $lingua_flag in
     "c")
-        include_source="#include <stdlib.h>\n#include <stdio.h>"
-        compl="gcc"
-        compl_flags="-c -g -Wall"
+        code_source_template=$SCRIPT_DIR/templates/template_c
+        makefile_template=$SCRIPT_DIR/templates/Makefile_c
         ;;
     "cpp")
-        include_source="#include <iostream>\n\nusing namespace std;"
-        compl="g++"
-        compl_flags="-c -g -Wall -std=c++14"
+        code_source_template=$SCRIPT_DIR/templates/template_cpp
+        makefile_template=$SCRIPT_DIR/templates/Makefile_cpp
         ;;
     *)
         echo "Wrong lingua flag."
@@ -59,50 +59,13 @@ case $lingua_flag in
         ;;
 esac
 
-#
 # dir_name/file_name.lingua_flag
-#
-code_source="/**
- * $file_name.$lingua_flag -- 
- *
- * Copyright (c) $current_year, Denis Kovalchuk <deniskk25@gmail.com>
- *
- * This code is licensed under a MIT-style license.
- */
+code_source=$(cat $code_source_template | sed "s/file_name/$file_name/g" | sed "s/year/$year/g")
 
-$include_source
-
-int main(int argc, char *argv[]) {
-
-    return 0;
-}"
-
-#
 # dir_name/Makefile
-#
-makefile_source="CXX        = $compl
-CXXFLAGS   = $compl_flags
-SOURCES    = \$(wildcard *.$lingua_flag)
-OBJECTS    = \$(patsubst %.$lingua_flag, %.o, \$(SOURCES))
-EXECUTABLE = $file_name
+makefile_source=$(cat $makefile_template | sed "s/file_name/$file_name/g")
 
-all: \$(EXECUTABLE)
-
-\$(EXECUTABLE): \$(OBJECTS)
-	\$(CXX)  \$(OBJECTS) -o \$(EXECUTABLE)
-
-%.o: %.$lingua_flag
-	\$(CXX) \$(CXXFLAGS) \$< -o \$@
-
-clean:
-	@rm -f *~
-	@rm -f *.o
-
-.PHONY: clean"
-
-#
 # create a workspace
-#
 count=0
 mkdir $dir_name$count 2>/dev/null
 while [ "$?" != 0 ]
