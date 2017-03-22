@@ -20,7 +20,7 @@ fi
     
 dir_name="project"
 file_name="main"
-lingua_flag="c"
+lingua_flag="cpp"
 year=$(date +"%Y")
 
 function set_argv {
@@ -33,6 +33,10 @@ function set_argv {
             ;;
         -t=*)
             lingua_flag=${1:3}
+            ;;
+        *)
+            echo "Wrong a argument."
+            exit 1
             ;;
     esac
 }
@@ -67,13 +71,17 @@ makefile_source=$(cat $makefile_template | sed "s/file_name/$file_name/g")
 
 # create a workspace
 count=0
-mkdir $dir_name$count 2>/dev/null
+mkdir $dir_name 2>/dev/null
 while [ "$?" != 0 ]
 do
     ((count++))
-    mkdir $dir_name$count 2>/dev/null
+    mkdir $dir_name$count 2>/dev/null    
 done
-dir_name=$dir_name$count
+
+if [[ count -ne 0 ]]
+then
+    dir_name=$dir_name$count
+fi
 
 touch $dir_name/$file_name.$lingua_flag
 echo  -e "$code_source" > $dir_name/$file_name.$lingua_flag
